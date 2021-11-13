@@ -1,0 +1,175 @@
+//============================================================================
+// Name        : cifrado.cpp
+// Author      : 
+// Version     :
+// Copyright   : Your copyright notice
+// Description : Hello World in C++, Ansi-style
+//============================================================================
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+//leer archivo y ver el codigo y el mensaje y guardarlos
+#define diccionario[] = {" !\"#$%&'(){}[]*+;,./\\-_0123456789:<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"}
+
+//recibir un texto, una clave, si clave es menor que el texto repetir la clave hasta que cada numero tenga asociado una clave
+
+
+
+char codificacion(char argv,int *codigo, int tamcodigo,int tamanmensaje, int k, int *clave, int longitud)
+{
+
+	int i=0;
+	while(diccionario[i]!=argv)
+	{
+		i++;
+	}
+	i=(i+clave[k])%longitud;
+	//recorrer diccionario hasta encontrar posicion argv sumarle clave k
+	return i;
+}
+char decodificacion(char argv,int *codigo, int tamcodigo,int tamanmensaje, int k, int *clave, int longitud)
+{
+
+	int i=0;
+	while(diccionario[i]!=argv)
+	{
+		i++;
+	}
+	i=(i-clave[k])%longitud;
+	//recorrer diccionario hasta encontrar posicion argv sumarle clave k
+	return i;
+
+}
+//busca por la informacion hasta llegar a un numero y regresa la posicion de este
+int primerint(char *argv,int argc)
+{
+	for(int i=0; i<argc;i++)
+	{
+		if(argv[i]==0 || argv[i]==1 || argv[i]==2 || argv[i]==3 || argv[i]==4 || argv[i]==5 || argv[i]==6 || argv[i]==7 || argv[i]==8 || argv[i]==9 )
+			return(i);
+	}
+	return(-1);
+}
+
+//partiendo del primer numero continua hasta llegar a un caracter que no es un numero y regresa esa posicion
+int ultint(char *argv,int argc,int continic)
+{
+	for(int i=continic; i<argc;i++)
+		{
+			if(argv[i]!=0 || argv[i]!=1 || argv[i]!=2 ||argv[i]!=3 || argv[i]!=4 || argv[i]!=5 || argv[i]!=6 ||argv[i]!=7 || argv[i]!=8 || argv[i]!=9 )
+				return(i);
+		}
+		return(-1);
+}
+
+
+//revisa el inicio y deendiendo de si es cifrado o descifrado manda a la funcion correspondiente
+
+int main(int argc,char *argv[]) {
+	char v[2];
+	for(int i=0; i<3;i++){
+		v[1]=v[2];
+		v[2]=*argv[i];
+		if(*v[1]=="-" && *v[2]=="c")
+		{
+			cifrar(argv,argc);
+		}
+		if(*v[1]=="-" && *v[2]=="d")
+		{
+			decifrar(argv,argc);
+		}
+
+	}
+	return(-1);
+}
+
+
+void cifrar(char *argv,int argc)
+{
+	int tamcodigo,contfin;
+	int longitud=0;
+		while(diccionario[longitud]!='\0')
+		{
+			longitud++;
+		}
+
+//primero se encuentra donde comienzan y terminan los numeros
+	int continic=0,inicmensaj=0,tamanmensaje=0;
+	continic=primerint(argv,argc);
+	contfin=ultint(argv,argc,continic);
+	//su diferencia es el tamaño del codigo
+	tamcodigo=contfin-continic;
+	if(continic==-1 || contfin==-1){
+		printf("error");
+		return;
+	}
+
+	int codigo[contfin-continic];
+	for(int j=continic; j<contfin;j++)
+	{
+		codigo[]=argv[j];
+
+	}
+	inicmensaj=contfin+1;
+	tamanmensaje=argc-inicmensaj;
+	char cifrado[tamanmensaje];
+	int clave[tamanmensaje];
+	//se crea la clave del mismo tamaño del mensaje
+	for(int i=0; i<tamanmensaje;i++)
+	{
+		clave[i]=codigo[i%tamcodigo];
+	}
+	for(int k=0;k<argc-inicmensaj;k++)
+	{
+		cifrado[k]=codificacion(argv[k+inicmensaj],codigo,tamcodigo,tamanmensaje,k,clave,longitud);
+	}
+	printf("%s",cifrado);
+	return;
+
+
+}
+
+void decifrar(char *argv,int argc)
+{
+	int longitud=0;
+	while(diccionario[longitud]!='\0')
+		{
+			longitud++;
+		}
+		int continic=0,inicmensaj=0,tamanmensaje=0;
+		continic=primerint(argv,argc);
+		contfin=ultint(argv,argc,continic);
+			//su diferencia es el tamaño del codigo
+		tamcodigo=contfin-continic
+		if(continic==-1 || contfin==-1)
+		{
+			printf("error");
+			return;
+		}
+		int codigo[contfin-continic];
+			for(int j=continic; j<contfin;j++)
+			{
+				codigo[]=argv[j];
+
+			}
+			inicmensaj=contfin+1;
+			tamanmensaje=argc-inicmensaj;
+			char decifrado[tamanmensaje];
+			int clave[tamanmensaje];
+			//se crea la clave del mismo tamaño del mensaje
+			for(int i=0; i<tamanmensaje;i++)
+			{
+				clave[i]=codigo[i%tamcodigo];
+			}
+			for(int k=0;k<argc-inicmensaj;k++)
+			{
+				decifrado[k]=decodificacion(argv[k+inicmensaj],codigo,tamcodigo,tamanmensaje,k,clave,longitud);
+			}
+			printf("%s",decifrado);
+			return;
+
+}
+
